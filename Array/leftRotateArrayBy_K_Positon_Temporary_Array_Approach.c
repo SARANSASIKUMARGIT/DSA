@@ -3,7 +3,9 @@
 
 /* Saran SK */
 
-/* Program to Left Rotate an Array by K positon - TEMPORARY ARRAY METHOD */
+/* Program to Left Rotate an Array by K positon - TEMPORARY ARRAY METHOD 
+        TIME COMPLEXITY : O(N) , SPACE COMPLEXITY : O(K) extra K space for storing first K elements in a temporary array
+*/
 
 void rotateArraybyK_Places(int *a,int n,int k)
 {
