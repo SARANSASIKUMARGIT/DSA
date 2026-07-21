@@ -4,7 +4,7 @@
 
 /* Saran SK */
 
-/* Program to move duplicate elements to the end of the UnSorted array (by TWO POINTER APPROACH)
+/* Program to find Non-Repeating Elements in an array
     TIME COMPLEXITY : O(N^2) because of bubble sort (worst case), 
     SPACE COMPLEXITY : O(1) no extra space.
 
