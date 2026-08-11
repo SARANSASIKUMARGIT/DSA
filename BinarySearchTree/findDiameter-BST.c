@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<stdbool.h>
 #include<stdlib.h>
-#include<string.h>
 
 /* Saran SK */
 
@@ -51,31 +50,25 @@ int max(int a,int b)
     return (a>b)?a:b;
 }
 
-int heightOfLeapNode(struct BSTNode* root,int* diameter)                //function to find the height of the subtree and returns length(height) of longest subtree by recursive approach
+int calculateHeightAndDiameter(struct BSTNode* root,int* diameter)                      //calculate maximum height of both left and right subtrees of every node
 {
     if(root==NULL)
         return 0;
-    if(root->left==NULL && root->right==NULL)
-        return 1;
-    int leftSubTreeHeight=heightOfLeapNode(root->left,diameter);
-    int rightSubTreeHeight=heightOfLeapNode(root->right,diameter);
-    *diameter=max(*diameter,(leftSubTreeHeight+rightSubTreeHeight+1));
-    return (1+max(leftSubTreeHeight,rightSubTreeHeight));
+    int leftLeafNodeHeight = calculateHeightAndDiameter(root->left,diameter);
+    int rightLeafNodeHeight = calculateHeightAndDiameter(root->right,diameter);
+    *diameter=max(*diameter, leftLeafNodeHeight+rightLeafNodeHeight+1);                 //checking whether the current path between the leftMost Depth Leaf node and RightMost Depth Leaf node is maximum than previous path
+
+    return 1+(max(leftLeafNodeHeight,rightLeafNodeHeight));                             //returning the maximum height between the heights of left and right subtree of a node
 }
 
-int diameterOfBST(struct BSTNode* root,int* diameter)               //function similar to heightOfLeapNode but returns the diameter instead of maximum height of the subtree
+
+int diameterOfBST(struct BSTNode* root,int* diameter)
 {
-    if(root==NULL)
+    if(root==NULL)                  //if node is NULL , then diameter = 0
         return 0;
-    if(root->left==NULL && root->right==NULL)
-        return 1;
-    int leftSubTreeHeight=1+heightOfLeapNode(root->left,diameter);
-    int rightSubTreeHeight=1+heightOfLeapNode(root->right,diameter);
-    if( (leftSubTreeHeight+rightSubTreeHeight-1) > *diameter)
-        *diameter=(leftSubTreeHeight+rightSubTreeHeight-1);
-    return *diameter;
+    calculateHeightAndDiameter(root,diameter);          //calls calculateHeightAndDiameter() method to calculate the diameter of the tree
+    return *diameter;                                   //returns diameter by dereferencing the pointer
 }
-
 
 void main()
 { 
@@ -90,7 +83,7 @@ void main()
     }
 
     int diameter=0;
-    diameter=diameterOfBST(root,&diameter);                 //calling diameterOfBST() with root node reference and diameter variable reference
-    printf("Diameter of the BST is : %d",diameter);
+    diameter=diameterOfBST(root,&diameter);
+    printf("Diameter of the Tree : %d ",diameter);
 
 }
