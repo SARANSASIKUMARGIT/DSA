@@ -4,7 +4,7 @@
 
 /* Saran SK */
 
-/*
+/* 
     NOTE : This approach may fail in Deep BST but works fine for medium level BST ,
             The Optimal Approach is by Boundary Checking Method (check out in this current repo folder for /isValid-BST-Boundary-Checking-Approach.c )
     
