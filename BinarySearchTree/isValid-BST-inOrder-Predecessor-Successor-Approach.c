@@ -9,6 +9,17 @@
     A BST is valid only if for each node all the nodes on it's left are less than it and
     all the nodes on it's right are greater than it. 
     Otherwise , it is not a Valid BST.
+
+    The Approach of this program is , It check every node that 
+        if currentNode value is greater than it's inOrder Predecessor and current Value is less than it's inOrder Successor 
+            then move to both left and right child and verify the same condition for it
+        if node is null or leaf node 
+            then return true;
+        else 
+            return false; 
+
+    Inorder Predecessor : Largest Value on the Left Subtee,
+    Inorder Successor   : Smallest Value on the right Subtree
 */
 
 struct BSTNode *root=NULL;   //Pointer that stores the memory address of the root node of the binary search tree (initialy NULL)
