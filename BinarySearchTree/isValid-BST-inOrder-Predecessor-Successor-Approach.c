@@ -133,7 +133,7 @@ int main()
         root=insertNode(root,num);    //Inserting the node into BST1 and returning the address 
     }
 
-    struct BSTNode* node = fetchNode(root,10);              //fetching a node with specific value from the BST 
+    struct BSTNode* node = fetchNode(root,num);              //fetching last inserted node from the BST 
     if(node!=NULL)
         node->right= createNode(node->data -1);             //to perform manual invalid insertion into BST to test the function isValidBST()
 
