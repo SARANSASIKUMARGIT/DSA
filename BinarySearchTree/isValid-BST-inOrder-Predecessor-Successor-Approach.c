@@ -5,6 +5,9 @@
 /* Saran SK */
 
 /*
+    NOTE : This approach may fail in Deep BST but works fine for medium level BST ,
+            The Optimal Approach is by Boundary Checking Method (check out in this current repo folder for /isValid-BST-Boundary-Checking-Approach.c )
+    
     C Program to check whether a Binary Search Tree (BST) is valid or not ?
     A BST is valid only if for each node all the nodes on it's left are less than it and
     all the nodes on it's right are greater than it. 
