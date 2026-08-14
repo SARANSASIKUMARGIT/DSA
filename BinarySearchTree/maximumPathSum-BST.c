@@ -6,7 +6,9 @@
 /* Saran SK */
 
 /*
-    
+    C program to calculate maximum path sum in a BST, 
+    The Maximum path sum in a tree is the path of tree in which sum of values of all nodes are maximum , "NO SIMULTANEOUS PATH SELECTION"
+    NOTE : Only one path can be selected , no multiple path for a single node can be selected for maximum sum, Select only the largest possible path ,
 */
 
 struct BSTNode *root=NULL;   //Pointer that stores the memory address of the root node of the binary search tree (initialy NULL)
