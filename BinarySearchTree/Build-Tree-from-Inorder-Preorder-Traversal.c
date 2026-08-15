@@ -10,7 +10,6 @@
 */
 
 struct BSTNode *root=NULL;   //Pointer that stores the memory address of the root node of the binary search tree (initially NULL)
-int *preOrderArray=NULL,*inOrderArray = NULL;
 
 struct BSTNode               //Defining the structure of node in the binary search Tree
 {
@@ -43,50 +42,36 @@ struct BSTNode* insertNode(struct BSTNode* root,int data)      //Function that i
     return root;       //Returns the current address to the caller which is the address of the calling itself (to ensure the structure of the BS Tree is Preserved)
 }
 
-struct BSTNode* constructTree(int low,int preOrderPointer,int inOrderPointer,int endRange ,int high)
+struct BSTNode* constructTree(int* preOrderArray,int preOrderStart, int preOrderEnd,int *inOrderArray,int inOrderStart,int inOrderEnd)
 {
-    if(preOrderArray[preOrderPointer] == inOrderArray[inOrderPointer])
+    if(preOrderStart == preOrderEnd)
+        return createNode( preOrderArray[preOrderStart] );
+    int rootIndex = -1;
+    for(int i=inOrderStart;i<=inOrderEnd;++i)
     {
-        struct BSTNode* root = createNode(preOrderArray[preOrderPointer]);
-        if(preOrderPointer + 1 <= high)
+        if(inOrderArray[i] == preOrderArray[preOrderStart])
         {
-            int leftNode = preOrderArray[preOrderPointer+1];
-            int leftNodeindex = -1;
-            for(int i=inOrderPointer-1;i>=low;--i)
-            {
-                if(inOrderArray[i]==leftNode)
-                {
-                    leftNodeindex = i;
-                    break;
-                }
-            }
-            if(leftNodeindex != -1)
-                root->left = constructTree(low,preOrderPointer+1,leftNodeindex,inOrderPointer,high);
-
-            int rightNode = preOrderArray[preOrderPointer + inOrderPointer + 1];
-            int rightNodeindex = -1;
-            for(int i=inOrderPointer+1;i<=endRange;++i)
-            {
-                if(inOrderArray[i] == rightNode)
-                {
-                    rightNodeindex = i;
-                    break;
-                }
-            }
-            if(rightNodeindex != -1)
-                root->right= constructTree(inOrderPointer+1, preOrderPointer + inOrderPointer + 1,rightNodeindex,endRange,high);
+            rootIndex = i;
+            break;
         }
-
+    }
+    if(rootIndex != -1)
+    {
+        struct BSTNode* root = createNode(inOrderArray[rootIndex]);
+        root->left = constructTree(preOrderArray,preOrderStart+1,preOrderStart+(rootIndex-inOrderStart), inOrderArray,inOrderStart,rootIndex-1);
+        root->right = constructTree(preOrderArray,preOrderStart+(rootIndex-inOrderStart)+1,preOrderEnd, inOrderArray,rootIndex+1,inOrderEnd);
+        
         return root;
     }
     return NULL;
+
 }
 
-void inputPreorder_InorderArray(int n)
+void inputPreorder_InorderArray(int** preOrderArray,int** inOrderArray,int n)
 {
-    preOrderArray=(int*)malloc(n*sizeof(int));
-    inOrderArray = (int*)malloc(n*sizeof(int));
-    if(preOrderArray == NULL || inOrderArray == NULL)
+    *preOrderArray=(int*)malloc(n*sizeof(int));
+    *inOrderArray = (int*)malloc(n*sizeof(int));
+    if(*preOrderArray == NULL || *inOrderArray == NULL)
     {
         printf("Array Memory Allocation Failed . Please Try again \n");
         exit(1);
@@ -94,12 +79,12 @@ void inputPreorder_InorderArray(int n)
     for(int i=0;i<n;++i)
     {
         printf("Enter Preoder Node %d value : ",i);
-        scanf("%d",preOrderArray+i);
+        scanf("%d",(*preOrderArray)+i);
     }
     for(int i=0;i<n;++i)
     {
         printf("Enter Inorder Node %d value : ",i);
-        scanf("%d",inOrderArray+i);
+        scanf("%d",*(inOrderArray)+i);
     }
 }
 
@@ -114,29 +99,21 @@ void preOrderTraversal(struct BSTNode* root)
 
 int main()
 { 
-    int n,rootNodeIndex=-1;
+    int n;
     printf("Enter the length of Traversal Array : ");
     scanf("%d",&n);
 
-    inputPreorder_InorderArray(n);
-    for(int i=0;i<n;++i)
+    int *preOrderArray=NULL,*inOrderArray = NULL;
+    inputPreorder_InorderArray(&preOrderArray,&inOrderArray,n);
+    struct BSTNode* root = constructTree(preOrderArray,0,n-1,inOrderArray,0,n-1);
+    
+    if(root==NULL)
     {
-        if(inOrderArray[i] == preOrderArray[0])
-        {
-            rootNodeIndex = i;
-            break;
-        }
-    }
-
-    if(rootNodeIndex == -1)
-    {
-        printf("Root Node %d Not found in Inorder Traversal Array . Enter a valid Array \n");
+        printf("Couldn't Construct the Binary Tree, Verify the Preorder and Inorder Traversal Array \n");
         exit(1);
     }
 
-    root=constructTree(0,0,rootNodeIndex,n-1,n-1);
-    if(root==NULL)
-        printf("Tree is Empty . Construction Failed \n");
+    printf("PreOrder Traversal of the Tree :  ");
     preOrderTraversal(root);  
     
     
