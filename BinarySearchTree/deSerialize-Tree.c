@@ -141,10 +141,10 @@ int main()
        char str[30];
        printf("Enter the Serialized Tree String : ");
        fgets(str,sizeof(str),stdin);
-       root = deSerializeTree(str,0,0,0,strlen(str));
+       root = deSerializeTree(str,0,0,0,strlen(str));          //constructing the Tree from serialized string 
 
        printf("\n Inorder Traversal of BST : ");
-       inOrderTraversal(root);
+       inOrderTraversal(root);      //Traversing the Tree by Inorder Traversal
     
 
 
