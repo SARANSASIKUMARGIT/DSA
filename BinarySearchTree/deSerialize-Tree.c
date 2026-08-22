@@ -10,6 +10,11 @@
     C Program to Deserialize a Tree,
     Serializing is the process of converting a Tree into a transmitted format e.g String,
     Deserializing is the process of constructing the tree from the serialized format (String -> Binary Tree)
+    NOTE : This Program serialize a String by Finding and Traversing to the Indices of the child of the current node , by constructing the Tree recursively ,
+    This Appraoch Works Fine for Normal Tree , but gives unexpected output for skewed Tree , 
+    Therefore an Optimal Appraoch Will be Breadth First Traversal (BFS) by creating the Node from the Serialize String and Pushing them into the Queue by BFS order ,
+    
+    Optimal Appraoch : check /deSerialize-Tree-BFS-Approach.c
 */
 
 struct BSTNode *root=NULL;   //Pointer that stores the memory address of the root node of the binary search tree (initially NULL)
