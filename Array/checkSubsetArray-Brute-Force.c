@@ -15,6 +15,9 @@
 
     After all the iteration are completed successfully , then it means all elements in arr1 are found to be in arr2 ,
     Therefore , Return True 
+
+    TIME COMPLEXITY  : O(N1 * N2) due to nested loop,
+    SPACE COMPLEXITY : O(1) only constant space .
 */
 
 
