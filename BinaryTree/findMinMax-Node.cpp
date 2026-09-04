@@ -63,7 +63,7 @@ int findMaxElementNode(struct BinaryNode* root)
 {
     if(root == nullptr)
         return 0;
-    return min(root->data, min(findMaxElementNode(root->leftNode),findMaxElementNode(root->rightNode)));
+    return min(root->data, max(findMaxElementNode(root->leftNode),findMaxElementNode(root->rightNode)));
 }
 
 int findMinElementNode(struct BinaryNode* root)
