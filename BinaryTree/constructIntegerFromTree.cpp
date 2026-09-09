@@ -4,7 +4,7 @@ using namespace std;
                     /*      Saran SK       */
 
 /*
-    C++ Program to construct integer from the nodes of the tree by Inorder Traversal 
+    C++ Program to construct integer from the nodes of the tree by Inorder Traversal recursively,
 
     TIME COMPLEXITY  : O(N) for traversing N number of nodes,
     SPACE COMPLEXITY : O(1) only constant extra space
@@ -49,26 +49,17 @@ struct BinaryNode* insertNode(BinaryNode* root,int data)                        
     return root;        //return the root node
 }
 
-int constructIntegerfromTree(struct BinaryNode* root)
+int constructIntegerfromTree(struct BinaryNode* root, int result)
 {
-    if(root == nullptr)
-        return 0;
-    int sum=0;
-    if(root->leftNode)
-    {
-        sum=constructIntegerfromTree(root->leftNode);
-        sum*=10;
-        sum+= root->data;
-    }
-    else
-        sum = root->data;
-    if(root->rightNode)
-    {
-        sum*=10;
-        sum+= constructIntegerfromTree(root->rightNode);
-    }
+    if(root == nullptr)                     //if empty node , then return the same result
+        return result;
+
+    result=constructIntegerfromTree(root->leftNode,result);     //pass the current result to the left node
+    result = (result*10) + root->data;                          //after left subtree returns the result , multiply it with 10 and add data of current node
     
-    return sum;
+    result = constructIntegerfromTree(root->right,result);      //then , pass the current result to the right node 
+    
+    return result;          // after the constructing the integer from all it's left and right subtree return the result
 }
 
 
@@ -98,7 +89,7 @@ int main()
         root=insertNode(root,num);              //inserting the data into the tree
     }
 
-    cout<<"Integer constructed from data of Binary Tree from Inorder Traversal  : "<<constructIntegerfromTree(root)<<endl;
+    cout<<"Integer constructed from data of Binary Tree from Inorder Traversal  : "<<constructIntegerfromTree(root,0)<<endl;
 
     deleteTree(root);                                         //deallocating the memory of all nodes of the return
 
