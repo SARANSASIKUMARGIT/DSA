@@ -5,10 +5,13 @@ using namespace std;
 
 /*
     C++ Program to print the Top View of the Binary Tree,
-    Top View of the Binary Tree is the nodes that are visible from the top view of the Tree (The Left Most & Right Most Nodes of the Tree)
+    Top View = Nodes that are visibile when a Binary Tree is seen from the top view.
+    Each Left Child has it's line or index as index-1 and
+    Right child has it's index as index+1
 
-    TIME COMPLEXITY  : O(N) for traversing N number of nodes,
-    SPACE COMPLEXITY : O(N) for storing nodes in one queue and their corresponding index in other queue
+
+    TIME COMPLEXITY  : O(N) for traversing N number of nodes by Depth First Search ,
+    SPACE COMPLEXITY : O(K) where K = number of top view nodes
 */
 
 struct BinaryNode                 //defining the structure of BinaryNode using struct 
@@ -50,49 +53,6 @@ struct BinaryNode* insertNode(BinaryNode* root,int data)                        
     return root;        //return the root node
 }
 
-void printTopViewofBinaryTree(struct BinaryNode* root)
-{
-    if(root == nullptr)
-        return; 
-    queue<BinaryNode*> node_queue;                          //queue for storing nodes in level order
-    queue<int> node_index;                                  //queue for corresponding index of the nodes
-    
-    node_queue.push(root);                                  //push root node and corresponding index as 0 initially to both the queues respectively
-    node_index.push(0);
-    int leftBoundaryIndex = 0, rightBoundaryIndex = 0;          //initializing the left and right boundary index
-
-    while(!node_queue.empty())                                 //executes while the queue is not empty
-    {
-        int currentNodeIndex = node_index.front();              //fetching current front node and index from the queue
-        BinaryNode* currentNode = node_queue.front();
-        if( currentNodeIndex <= leftBoundaryIndex || currentNodeIndex >= rightBoundaryIndex )               // if the current index of the node matches any valid boundary value
-        {
-            cout<<currentNode->data <<" ";                  //printing the value of the current node
-
-            if(currentNodeIndex <= leftBoundaryIndex)       //if node is the current leftmost node
-                --leftBoundaryIndex;
-            if(currentNodeIndex >= rightBoundaryIndex)      //if node is the current rightmost node
-                ++rightBoundaryIndex;
-        }
-
-        if(currentNode->leftNode)
-        {
-            node_queue.push(currentNode->leftNode);        //push the left child and it's index as currentIndex - 1 to the respective queues
-            node_index.push(currentNodeIndex-1);
-        }
-        if(currentNode->rightNode)
-        {
-            node_queue.push(currentNode->rightNode);      //push the right child and it's index as currentIndex + 1 to the respective queues
-            node_index.push(currentNodeIndex + 1);
-        }
-
-        node_queue.pop();                           //popping the front nodes which are recently visited
-        node_index.pop();
-
-    }
-
-}
-
 void deleteTree(BinaryNode* root)                           //function to deallocate all nodes of the tree from memory
 {
     if(root == nullptr)
@@ -100,6 +60,35 @@ void deleteTree(BinaryNode* root)                           //function to deallo
     deleteTree(root->leftNode);
     deleteTree(root->rightNode);
     delete root;
+}
+
+void printTopView_Tree(struct BinaryNode* root)            //function to print the top view of the Binary Tree
+{
+    if(root == nullptr)                                    //if empty tree
+        return;
+    queue<pair<int,struct BinaryNode*>> q;                  //queue for storing node and it's line number as a pair<>
+    map<int,struct BinaryNode*> topViewNodeMap;             //map for storing the first node with index i and do not store any other with index i in further traversal
+    q.push({0,root});                                       //pushing the initial root node with initial index 0 as a pair to the queue
+
+    while(!q.empty())               //while queue becomes empty
+    {
+        int index = (q.front()).first;          //index = queue front node pair's first value
+        struct BinaryNode* currentNode = (q.front()).second;        //currentNode = queue front node pair's second value (Node reference*)
+
+        auto isNodeExist = topViewNodeMap.find(index);          //check whether the key with value 'index' exist in the map
+
+        if(isNodeExist == topViewNodeMap.end())                 //if no key with value 'index' doesn't exist then add the key = index , value = currentNode reference to the map
+            topViewNodeMap[index] = currentNode;
+        if(currentNode->leftNode)
+            q.push({index-1,currentNode->leftNode});            //append the left child reference with it's index as index-1 as pair to the queue
+        if(currentNode->rightNode)                              
+            q.push({index+1, currentNode->rightNode});          //append the right child reference with it's index as index+1 as pair to the queue
+        q.pop();    //pop the front node of the queue which is visited
+    }
+
+    for(auto a : topViewNodeMap)
+        cout<<a.second->data<<" ";
+    cout<<endl;
 }
 
 
@@ -118,7 +107,8 @@ int main()
         root=insertNode(root,num);              //inserting the data into the tree
     }
 
-    printTopViewofBinaryTree(root);             //calling the function to print the Top View of the Binary Tree
+    cout<<"\nTop View of the Binary Tree : ";
+    printTopView_Tree(root);
 
     deleteTree(root);                                         //deallocating the memory of all nodes of the return
 
