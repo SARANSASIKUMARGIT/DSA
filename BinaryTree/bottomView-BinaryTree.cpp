@@ -10,7 +10,7 @@ using namespace std;
     Right child has it's index as index+1
 
 
-    TIME COMPLEXITY  : O(N) for traversing N number of nodes by Depth First Search ,
+    TIME COMPLEXITY  : O(N) for traversing N number of nodes by Breadth First Traversal ,
     SPACE COMPLEXITY : O(K) where K = number of Bottom view nodes
 */
 
@@ -62,46 +62,35 @@ void deleteTree(BinaryNode* root)                           //function to deallo
     delete root;
 }
 
-void printBottomView_Tree(struct BinaryNode* root)
+void printBottomView_Tree(struct BinaryNode* root)          //function to print the bottom view nodes of the Binary Nodes
 {
-    if(root == nullptr)
+    if(root == nullptr)             //if tree is empty
         return;
 
-        queue<pair< pair<int,int>, struct BinaryNode*>> q;
-        map<int, pair<int, vector<struct BinaryNode*>>> verticalLevelMap;
+    queue<pair<int,struct BinaryNode*>> q;                  //queue for storing pair of <index , Node*.
+    map<int,struct BinaryNode*> bottomViewMap;              //Ordered Map to store latest nodes of each vertices of the tree
 
-        q.push({{0,0},root});
-        while(!q.empty())
-        {
-            struct BinaryNode* currentNode = (q.front()).second;
-            int index = (q.front()).first.first;
-            int level = (q.front()).first.second;
-            auto it = verticalLevelMap.find(index);
-            if(it == verticalLevelMap.end())
-                verticalLevelMap[index] = {level,{currentNode}};
-            else if(level == it->second.first )
-            {
-                (it->second.second).push_back(currentNode);
-            }
-            else
-            {
-                (it->second).first = index;
-                (it->second.second).clear();
-                (it->second.second).push_back(currentNode);
-            }
-            if(currentNode->leftNode)
-                q.push({{index-1,level+1},currentNode->leftNode});
-            if(currentNode->rightNode)
-                q.push({{index+1,level+1},currentNode->rightNode});
-            q.pop();
-        }
+    q.push({0,root});                 //push root node with index=0 initially
+    while(!q.empty())
+    {
+        int index = q.front().first;                            //fetching index of front element in queue
+        struct BinaryNode* currentNode = q.front().second;      //fetching front node in the queue
+        q.pop();                                                //pop the current front element 
 
-        for(auto a : verticalLevelMap)
-        {
-            vector<struct BinaryNode*> v= a.second.second;
-            for(auto x : v)
-                cout<<x->data<<" ";
-        }
+        bottomViewMap[index] = currentNode;         //add or update the vertices with latest node
+        if(currentNode->leftNode)
+            q.push({index-1,currentNode->leftNode});            //push left node with index - 1 as pair<>
+        if(currentNode->rightNode)
+            q.push({index+1,currentNode->rightNode});           //push right node with index + 1 as pair<>
+
+    }
+
+    cout<<"Bottom View Nodes : ";
+    for(auto a : bottomViewMap)                 //print the bottom view nodes from traversing the keys(vertices) in the ordered map
+    {
+        cout<<a.second->data<<" ";
+    }
+    cout<<endl;
 }
 
 
@@ -121,7 +110,6 @@ int main()
         root=insertNode(root,num);              //inserting the data into the tree
     }
 
-    cout<<"\nBottom View of the Binary Tree : ";
     printBottomView_Tree(root);
 
     deleteTree(root);                                         //deallocating the memory of all nodes of the return
