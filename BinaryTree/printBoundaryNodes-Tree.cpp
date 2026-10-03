@@ -4,11 +4,11 @@ using namespace std;
                     /*      Saran SK       */
 
 /*
-    C++ Program to Print the Boundary Nodes of the Binary Tree
+    C++ Program to print the Boundary Nodes of the Binary Tree
 
 
-    TIME COMPLEXITY  : O(N) for traversing N number of nodes by Breadth First Traversal ,
-    SPACE COMPLEXITY : O(K) where K = number of Boundary nodes
+    TIME COMPLEXITY  : O(N) for traversing N number of nodes,
+    SPACE COMPLEXITY : O(k) for storing k number of boundary nodes in a vector
 */
 
 struct BinaryNode                 //defining the structure of BinaryNode using struct 
@@ -50,6 +50,72 @@ struct BinaryNode* insertNode(BinaryNode* root,int data)                        
     return root;        //return the root node
 }
 
+bool isLeafNode(struct BinaryNode* root)
+{
+    if(root==nullptr || (root->leftNode==nullptr && root->rightNode==nullptr))          //if current node is null or leaf node
+        return true;
+    return false;
+}
+
+void preorderTraversal(struct BinaryNode* root, vector<int>& res)
+{
+    if(root==nullptr)
+        return;
+    if(isLeafNode(root))                    //check if current node is a leaf node
+        res.push_back(root->data);
+    preorderTraversal(root->leftNode,res);      //moving to left subtree
+    preorderTraversal(root->rightNode,res);     //moving to right subtree
+}
+
+void boundaryTraversal(struct BinaryNode* root,vector<int>& res)
+{
+    if(root==nullptr)
+        return;
+    if(isLeafNode(root))
+    {
+        res.push_back(root->data);
+        return;
+    }
+    res.push_back(root->data);                  //pushing root node's data to the result vector
+    struct BinaryNode* current = root;
+    current=current->leftNode;
+    //pushing left boundary node's data to the result vector
+    while(current)
+    {
+        if(!isLeafNode(current))                //check if current node is a leaf node
+            res.push_back(current->data);
+        if(current->leftNode)
+            current = current->leftNode;
+        else
+            current = current->rightNode;
+    }
+
+    //pushing leaf node's value to the result vector
+    preorderTraversal(root,res);       
+
+    stack<int> rightBoundaryNodes;         //stack for storing right boundary nodes from top to bottom
+    current= root->rightNode;
+
+    //pushing right boundary node's to the result vector
+    while(current)
+    {
+        if(!isLeafNode(current))                        //check if current node is a leaf node
+            rightBoundaryNodes.push(current->data);
+        if(current->rightNode)
+            current = current->rightNode;
+        else
+            current = current->leftNode;        
+    }
+
+    while(!rightBoundaryNodes.empty())
+    {
+        int currentNodeValue = rightBoundaryNodes.top();
+        rightBoundaryNodes.pop();
+        res.push_back(currentNodeValue);
+    }
+
+}
+
 void deleteTree(BinaryNode* root)                           //function to deallocate all nodes of the tree from memory
 {
     if(root == nullptr)
@@ -59,54 +125,12 @@ void deleteTree(BinaryNode* root)                           //function to deallo
     delete root;
 }
 
-void printBoundaryNodes_BinaryTree(struct BinaryNode* root)         //function to print the Boundary nodes of the binary tree
-{
-    if(root == nullptr)                 //return if tree is empty
-        return;
-    queue<struct BinaryNode*> q;
-    int index = -1;                     //intial pointer 
-    vector<int> res;                    //vector to store boundary nodes in respective order
-    q.push(root);                       //push root node to the queue
-
-    while(!q.empty())                   //until queue gets empty
-    {
-        int noOfCurrentLevelNodes = q.size(),idx=1;     //number of nodes in current level & idx = counter for inserting null nodes from the current index pointer into the result vector
-        for(int i=1;i<=noOfCurrentLevelNodes;++i)
-        {
-            struct BinaryNode* currentNode = q.front();
-            q.pop();
-            if(i==1)                            //if first node of the level
-            {
-                ++index;                        //increment the index pointer and insert the data of current node to the result vector
-                res.insert(res.begin()+index,currentNode->data);
-            }
-            else if(currentNode->leftNode==nullptr && currentNode->rightNode==nullptr)          //if node is null node
-            {
-                res.insert(res.begin()+index+idx,currentNode->data);
-                ++idx;          //increment the counter after every null node data is inserted into the result vector 
-                                //for inserting next null node data of the current level to next position of the latest inserted element
-            }
-            else if(i==noOfCurrentLevelNodes)           //if current node is the last node of the current level
-                res.insert(res.begin()+index+1,currentNode->data);
-            
-            if(currentNode->leftNode)               //push left child of current node
-                q.push(currentNode->leftNode);
-            if(currentNode->rightNode)              //push right child of current node
-                q.push(currentNode->rightNode);
-        }
-    }
-
-    cout<<"Boundary Value Nodes : ";
-    for(auto it=res.begin();it!=res.end();++it)     //print the Boundary Node's values
-        cout<<*it<< " ";
-    cout<<endl;
-}
-
 
 
 int main()
 {
     struct BinaryNode* root = nullptr;
+    vector<int> res;
 
     int n,num;
     cout<<"Enter the number of nodes of the Binary Tree : ";
@@ -119,7 +143,22 @@ int main()
         root=insertNode(root,num);              //inserting the data into the tree
     }
 
-    printBoundaryNodes_BinaryTree(root);
+
+    boundaryTraversal(root,res);
+    //Printing the Boundary Nodes of the Binary Tree
+    if(res.size())
+    {
+        cout<<"Boundary Traversal : ";
+        for(auto x : res)
+        {
+            cout<<x<<" ";
+        }
+        cout<<endl;
+    }
+    else
+        cout<<"\nThe Binary Node is Empty"<<endl;
+
+    res.clear();
 
     deleteTree(root);                                         //deallocating the memory of all nodes of the return
 
