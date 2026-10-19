@@ -4,6 +4,7 @@ using namespace std;
       /*  Saran SK */
 
 /*
+            OPTIMAL APPROACH using Hash Map
       C++ program to check whether Two Strings are Anagram ?.
 
       Time Complexity  : O(N) for traversing two strings N = s1.length + s2.length,
