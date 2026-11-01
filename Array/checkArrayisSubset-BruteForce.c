@@ -19,7 +19,7 @@
 bool isSubsetArray(int *a,int n1, int *b, int n2)   
 {
     if(n1>n2) return false;     //if array1 is larger than array2 , then it is obvious that array1 is not a subset of array2
-    bool isFound=false;         //Flag variable to check whether the element of a1 is found in a2
+    bool isFound=false;          //Flag variable to check whether the element of a1 is found in a2
     int temp,swapIndex;         //Temporary variable for storing value at swapping and swapIndex of element to swap and store temporary value
     for(int i=0;i<n1;++i)
     {
