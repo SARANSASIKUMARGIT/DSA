@@ -3,33 +3,32 @@ public:
     vector<vector<int>> threeSum(vector<int>& nums) {
         unordered_map<int,int> freq;
 vector<vector<int>> res;
-for(int i=0;i<nums.size();++i)
-    freq[nums[i]]++;
 
-for(int i=0;i<nums.size();++i)
+sort(nums.begin(),nums.end());
+
+for(int i=0;i<nums.size()-2;++i)
 {
-    if(!freq[nums[i]])
-        continue;
-    int num1=nums[i];
-    int compliment1=0-num1;
-    freq[num1]--;
-    for(int j=i+1;j<nums.size();++j)
+    if(nums[i]>0)
+        break;
+    int left=i+1, right=nums.size()-1;
+    while(left < right)
     {
-        if(!freq[nums[j]])
-            continue;
-        int num2=nums[j];
-        int num3=compliment1-num2;
-        freq[num2]--;
-        if(freq[num3])
+        int sum = nums[i]+nums[left]+nums[right];
+        if(sum==0)
         {
-            freq[num3]--;
-            res.push_back({num1,num2,num3});
-            break;
+            if(find(res.begin(),res.end(), vector<int>{nums[i],nums[left],nums[right]})==res.end())
+                res.push_back({nums[i],nums[left],nums[right]});
+            left++;
+            right--;    
         }
-        freq[num2]++;
+        else if(sum<0)
+            left++;
+        else
+            right--;    
     }
 }
 
 return res;
+
     }
 };
