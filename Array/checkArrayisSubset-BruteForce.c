@@ -11,6 +11,7 @@
     Input:   arr1[]= [1,3,4,5,2]
              arr2[]= [2,4,3,1,7,5,15]
     Output:  arr1[] is a subset of arr2[]
+    
 
     Time Complexity  : O(N1 * N2) as nested loop is used,
     Space Complexity : O(1)       only constant extra space for temporary variables
@@ -37,7 +38,7 @@ bool isSubsetArray(int *a,int n1, int *b, int n2)
         {
             temp=b[i];              
             b[i]=b[swapIndex];
-            b[swapIndex]=temp;
+            b[swapIndex] = temp;
         }
         else 
             return false;           //if any single element in arr1 is not found on arr2 then a1 is not a subset of a2
