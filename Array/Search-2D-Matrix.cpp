@@ -10,7 +10,7 @@ using namespace std;
        Given an integer target, return true if target is in matrix or false otherwise.
        You must write a solution in O(log(m * n)) time complexity.
 
-  TIME COMPLEXITY  :  O(log N)  because of using Binary Search to reduce the search range by half 
+  TIME COMPLEXITY  :  O(log M*N)  because of using Binary Search to reduce the search range by half 
   SPACE COMPLEXITY :  O(1)  only constant extra space
 
 */
