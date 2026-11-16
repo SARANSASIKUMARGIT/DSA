@@ -19,7 +19,7 @@ class Solution {
 public:
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
         int rows=matrix.size(),columns=matrix[0].size();
-        int low=0,high=rows-1,middle;
+        int low=0,high=rows-1 ,middle ;
         bool isMatchingRowFound = false;
         while(low<=high && !isMatchingRowFound)
         {
