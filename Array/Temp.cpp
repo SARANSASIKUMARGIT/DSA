@@ -3,70 +3,40 @@ public:
     int characterReplacement(string s, int k) {
         if(s.length()==0)
             return 0;
+        if(s.length()<=k)
+            return s.length();
         unordered_map<char,map<string,int>> charMap;
-        int maxSubStringLength = 1,len=s.length()-1;
-        for(int i=0;i<26;++i)
+        int maxSubStringLength=k,len=s.length()-1;
+        for(int i=0;i<k;++i)
+            charMap[s[i]]["count"]++;
+        for(int i=k;i<=len;++i)
         {
-            char c='A'+i;
-            charMap[c]["startIdx"]=0;
-            charMap[c]["endIdx"]=-1;
-            charMap[c]["availableMoves"]=k;
-        }
-
-        for(int i=0;i<s.length();++i)
-        {
-            int currentMaxLength,startIdx,endIdx,availableMoves,requiredMoves;
             char c=s[i];
-            if(charMap[c]["endIdx"]==-1)
+            int currentMaxLength,windowStartIndex,requiredMoves,remainingMoves;
+            windowStartIndex = charMap[c]["windowStartIdx"];
+            requiredMoves = (i-windowStartIndex)-charMap[c]["count"];
+            if(requiredMoves<=k)
             {
-                charMap[c]["endIdx"]=i;
-                requiredMoves=i;
-                availableMoves = k;
-                startIdx=0;
+                remainingMoves = k-requiredMoves;
+                currentMaxLength = (i-windowStartIndex)+1;
+                currentMaxLength += ( (remainingMoves<=(len-i))?remainingMoves:(len-i) );
             }
             else
             {
-                requiredMoves = i-charMap[c]["endIdx"]-1;
-                availableMoves = charMap[c]["availableMoves"];
-                startIdx = charMap[c]["startIdx"];
+                windowStartIndex = i-k;
+                while(windowStartIndex>0 && s[windowStartIndex-1]==c)
+                    --windowStartIndex;
+                for(int j=charMap[c]["windowPreviousIdx"];j<windowStartIndex;++j)
+                {
+                    if(s[j]==c)
+                        charMap[c]["count"]--;
+                }
+                charMap[c]["windowPreviousIdx"] = windowStartIndex;
+                currentMaxLength = i-windowStartIndex+1;
             }
-
-            if(requiredMoves<=availableMoves)
-            {
-                availableMoves -= requiredMoves;
-                endIdx = i;
-                currentMaxLength = (endIdx-startIdx+1);
-                if(availableMoves<=(len-i))
-                    currentMaxLength += availableMoves;
-                else
-                    currentMaxLength += (len-i);
-                charMap[c]["endIdx"] = i;
-                charMap[c]["availableMoves"] = availableMoves;
-            }
-            else if(requiredMoves>k)
-            {
-                startIdx = i-k;
-                endIdx = i;
-                charMap[c]["startIdx"] = startIdx;
-                charMap[c]["endIdx"] = endIdx;
-                charMap[c]["availableMoves"] = 0;
-                currentMaxLength= endIdx-startIdx+1;
-            }
-            else
-            {
-                endIdx = i;
-                availableMoves = k-requiredMoves;
-                currentMaxLength = (endIdx-startIdx+1);
-                if(availableMoves<=(len-i))
-                    currentMaxLength += availableMoves;
-                else
-                    currentMaxLength += (len-i);
-                
-                charMap[c]["endIdx"] = endIdx;
-                charMap[c]["availableMoves"] = availableMoves;
-            }
-
             maxSubStringLength = (currentMaxLength>maxSubStringLength)?currentMaxLength:maxSubStringLength;
+            charMap[c]["count"]++;
+            charMap[c]["windowStartIdx"] = windowStartIndex;
         }
 
         return maxSubStringLength;
