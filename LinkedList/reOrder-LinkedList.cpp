@@ -27,42 +27,55 @@ using namespace std;
  */
 class Solution {
 public:
-    ListNode* lastNodeofReorderList(deque<ListNode*> &q,ListNode* root)
+    int findMiddle(ListNode* root,ListNode** middleNode,int currentNumber)
     {   
+        if(root==nullptr)
+            return 0;
         if(root->next==nullptr)
+            return (currentNumber/2)+1;
+        int middleNumber = findMiddle(root->next,middleNode,currentNumber+1);
+        if(middleNumber==-1)
+            return -1;
+        if(middleNumber == currentNumber)
         {
-            q.front()->next=root;
-            q.pop_back();
-            q.pop_front();
-            return root;
+            *middleNode = root;
+            return -1;
         }
-        q.push_back(root->next);
-        ListNode* reOrderList=lastNodeofReorderList(q,root->next);
-        if(q.empty())
-            return reOrderList;
-        if(q.size()==1)
-        {
-            reOrderList->next=root;
-            q.pop_front();
-            return root;
-        }
-        q.front()->next=root;
-        reOrderList->next=q.front();
-        q.pop_front();
-        q.pop_back();
-        return root;
-
+        return middleNumber;
     }
     void reorderList(ListNode* head) {
         if(head==nullptr)
             return;
         if(head->next==nullptr)
             return;
-        deque<ListNode*> q;
-        ListNode* top=head;
-        q.push_back(head);
-        ListNode* reOrderList=lastNodeofReorderList(q,head);
-        if(reOrderList)
-            reOrderList->next = nullptr;
+        ListNode* middleNode=nullptr;
+        int middleNode = findMiddle(root,&middleNode,1);
+        ListNode* startNode1=root,*startNode2=middleNode;
+        ListNode* reOrderList=nullptr;
+        while(startNode2 && startNode1!=middleNode)
+        {
+            ListNode* firstNode = startNode1;
+            ListNode* secondNode = startNode2;
+            startNode1 = startNode1->next;
+            startNode2 = startNode2->next;
+            if(reOrderList==nullptr)
+            {
+                reOrderList=firstNode;
+                reOrderList->next=secondNode;
+                reOrderList=reOrderList->next;
+            }
+            else
+            {
+                reOrderList->next=firstNode;
+                firstNode->next=secondNode;
+                reOrderList = secondNode;
+            }
+        }
+        if(startNode2!=nullptr)
+        {
+            reOrderList->next=startNode2;
+            reOrderList = reOrderList->next;
+        }
+        reOrderList->next=nullptr;
     }
 };
